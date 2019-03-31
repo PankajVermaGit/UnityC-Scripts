@@ -7,16 +7,14 @@ using UnityEditor.SceneManagement;
 using System;
 using System.Reflection;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class AutoUpdate : MonoBehaviour {
 
-    int currentSceneIndex = 0;
-    public GameObject g;
+    public int currentSceneIndex = 0;
+    //public GameObject g;
 
     public void Awake()
     {
-        if (true)
-            return;
         currentSceneIndex = EditorSceneManager.GetActiveScene().buildIndex;
         EditorSceneManager.sceneOpened += SceneOpenedCallback;
     }
@@ -32,23 +30,22 @@ public class AutoUpdate : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
-         g = GameObject.Find("GameObject");
 
-        Component[] comp = GameObject.Find("Directional Light").GetComponents<Component>(); 
+        // g = GameObject.Find("GameObject");
 
-        foreach(Component c in comp)
-        {
-            if(c.GetType()==typeof(Transform))
-            {
-                continue;
-            }
+        //Component[] comp = GameObject.Find("Directional Light").GetComponents<Component>(); 
 
-            CopyComponent(c, g); 
-        }
+        //foreach(Component c in comp)
+        //{
+        //    if(c.GetType()==typeof(Transform))
+        //    {
+        //        continue;
+        //    }
 
-        if (true)
-            return;
+        //    CopyComponent(c, g); 
+        //}
+
+        TaskInScene();
 
         for (int i=0;i<SceneManager.sceneCountInBuildSettings;i++)
         {
@@ -62,13 +59,13 @@ public class AutoUpdate : MonoBehaviour {
         }
 
         //EditorSceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(1));
+        //DestroyImmediate(GetComponent<AutoUpdate>());
+        EditorSceneManager.SaveOpenScenes();
 
     }
 
     void SceneOpenedCallback(Scene scene, OpenSceneMode mode)
     {
-        if (true)
-            return;
         if (currentSceneIndex == scene.buildIndex)
         {
             print("Found Current Scene");
@@ -76,7 +73,8 @@ public class AutoUpdate : MonoBehaviour {
         }
         EditorSceneManager.SetActiveScene(scene);
         TaskInScene();
-        EditorSceneManager.UnloadSceneAsync(scene);
+        EditorSceneManager.CloseScene(scene,true);
+        
     }
 
 
